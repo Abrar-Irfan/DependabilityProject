@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependability School System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #0f172a; --accent: #3b82f6; --light: #f1f5f9; --success: #22c55e; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: var(--light); color: #333; }
+
+        /* Authentic Header with Image */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.9)),
+            url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white; padding: 3rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .hero h1 { margin: 0; font-size: 2rem; display: flex; align-items: center; gap: 1rem; }
+        .hero p { margin: 0.5rem 0 0 0; opacity: 0.8; }
+        .badge { background: var(--accent); padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+
+        /* Dashboard Grid */
+        .container { max-width: 1200px; margin: -2rem auto 2rem; padding: 0 1rem; position: relative; z-index: 10; }
+
+        /* Stats Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 1rem; }
+        .stat-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+        .bg-blue { background: var(--accent); }
+        .bg-green { background: var(--success); }
+        .bg-purple { background: #8b5cf6; }
+        .stat-info h3 { margin: 0; font-size: 2rem; }
+        .stat-info p { margin: 0; color: #64748b; font-size: 0.9rem; }
+
+        /* Main Content */
+        .main-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        h2 { margin-top: 0; color: var(--primary); font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
+
+        /* Forms & Inputs */
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+        input { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; }
+        button { background-color: var(--primary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; width: 100%; font-weight: 600; }
+        button:hover { background-color: #1e293b; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--light); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th { text-align: left; padding: 1rem; background: #f8fafc; color: #64748b; font-weight: 600; }
+        td { padding: 1rem; border-bottom: 1px solid #f1f5f9; }
+
+        /* Search Result Box */
+        #searchResult { background: #f8fafc; padding: 1rem; border-radius: 6px; margin-top: 1rem; display: none; border-left: 4px solid var(--accent); }
+
+        /* Toast */
+        #status { position: fixed; bottom: 20px; right: 20px; background: #1e293b; color: white; padding: 1rem 2rem; border-radius: 8px; display: none; animation: slideIn 0.3s; z-index: 100; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div>
+        <h1><i class="fa-solid fa-graduation-cap"></i> Dependability Academy</h1>
+        <p>Managed via Secure Spring Boot API</p>
+    </div>
+    <div class="badge">
+        <i class="fa-solid fa-shield-halved"></i> JML Verified
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue"><i class="fa-solid fa-user-graduate"></i></div>
+            <div class="stat-info">
+                <h3 id="statStudents">0</h3>
+                <p>Total Students</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-green"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <div class="stat-info">
+                <h3 id="statTeachers">0</h3>
+                <p>Faculty Members</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-purple"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="stat-info">
+                <h3 id="statPayroll">$0</h3>
+                <p>Monthly Payroll</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="left-col">
+            <div class="card">
+                <h2><i class="fa-solid fa-magnifying-glass"></i> Search Database</h2>
+                <div class="form-group">
+                    <input type="text" id="searchId" placeholder="Enter ID (e.g. T1, S1)">
+                </div>
+                <button onclick="searchId()" class="btn-outline">Find Record</button>
+                <div id="searchResult"></div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fa-solid fa-plus"></i> Admit Student</h2>
+                <form onsubmit="addStudent(event)">
+                    <div class="form-group"><input type="text" id="sId" placeholder="ID (e.g. S1)" required></div>
+                    <div class="form-group"><input type="text" id="sFirst" placeholder="First Name" required></div>
+                    <div class="form-group"><input type="text" id="sLast" placeholder="Last Name" required></div>
+                    <div class="form-group"><input type="number" id="sYear" placeholder="Year (2025)" required></div>
+                    <div class="form-group"><input type="text" id="sProg" placeholder="Program (CSE)" required></div>
+                    <button type="submit">Submit Record</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2><i class="fa-solid fa-briefcase"></i> Hire Teacher</h2>
+                <form onsubmit="addTeacher(event)">
+                    <div class="form-group"><input type="text" id="tId" placeholder="ID (e.g. T1)" required></div>
+                    <div class="form-group"><input type="text" id="tName" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" id="tDept" placeholder="Department" required></div>
+                    <div class="form-group"><input type="number" id="tCourses" placeholder="Courses Assigned" required></div>
+                    <button type="submit">Submit Record</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="card">
+                <h2><i class="fa-solid fa-list"></i> Academic Directory</h2>
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Details</th></tr></thead>
+                    <tbody id="mainTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="status">Operation Successful</div>
+
+<script>
+    const API_URL = '/api';
+
+    // --- Search Functionality (New) ---
+    async function searchId() {
+        const id = document.getElementById('searchId').value;
+        const box = document.getElementById('searchResult');
+        if(!id) return;
+
+        // Try finding as student
+        let res = await fetch(`${API_URL}/student/${id}`);
+        if(res.ok && (await res.clone().text())) {
+            const s = await res.json();
+            box.style.display = 'block';
+            box.innerHTML = `<strong>Student Found:</strong><br>${s.firstName} ${s.lastName} (${s.programme})`;
+            return;
+        }
+
+        // Try finding as teacher
+        res = await fetch(`${API_URL}/teacher/${id}/salary`);
+        if(res.ok) {
+            const salary = await res.json();
+            box.style.display = 'block';
+            box.innerHTML = `<strong>Teacher Found:</strong><br>Salary Payout: $${salary.toLocaleString()}`;
+            return;
+        }
+
+        box.style.display = 'block';
+        box.innerHTML = `<span style="color:red">ID not found in system.</span>`;
+    }
+
+    // --- Core Actions ---
+    async function addStudent(e) {
+        e.preventDefault();
+        await postData(`${API_URL}/student`, {
+            id: document.getElementById('sId').value,
+            firstName: document.getElementById('sFirst').value,
+            lastName: document.getElementById('sLast').value,
+            year: document.getElementById('sYear').value,
+            programme: document.getElementById('sProg').value
+        });
+        refreshAll();
+    }
+
+    async function addTeacher(e) {
+        e.preventDefault();
+        await postData(`${API_URL}/teacher`, {
+            id: document.getElementById('tId').value,
+            name: document.getElementById('tName').value,
+            department: document.getElementById('tDept').value,
+            courseCount: document.getElementById('tCourses').value
+        });
+        refreshAll();
+    }
+
+    // --- Data Loading & Stats ---
+    async function refreshAll() {
+        // Load Students
+        const sRes = await fetch(`${API_URL}/students`);
+        const students = await sRes.json();
+
+        // Load Teachers
+        const tRes = await fetch(`${API_URL}/teachers`);
+        const teachers = await tRes.json();
+
+        // Calculate Totals
+        document.getElementById('statStudents').textContent = students.length;
+        document.getElementById('statTeachers').textContent = teachers.length;
+
+        // Calculate Payroll
+        let totalPayroll = 0;
+        const rows = [];
+
+        // Combine lists for the main table
+        students.forEach(s => rows.push(`<tr><td><span style="color:var(--accent)">${s.id}</span></td><td>${s.firstName} ${s.lastName}</td><td>Student (${s.programme})</td></tr>`));
+
+        for (const t of teachers) {
+            const salRes = await fetch(`${API_URL}/teacher/${t.id}/salary`);
+            const salary = await salRes.json();
+            totalPayroll += salary;
+            rows.push(`<tr><td><span style="color:var(--success)">${t.id}</span></td><td>${t.name}</td><td>Faculty ($${salary.toLocaleString()})</td></tr>`);
+        }
+
+        document.getElementById('statPayroll').textContent = '$' + totalPayroll.toLocaleString();
+        document.getElementById('mainTable').innerHTML = rows.join('');
+    }
+
+    async function postData(url, data) {
+        try {
+            const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            showStatus(await res.text());
+        } catch(e) { showStatus("Error"); }
+    }
+
+    function showStatus(msg) {
+        const el = document.getElementById('status');
+        el.innerText = msg; el.style.display = 'block';
+        setTimeout(() => el.style.display = 'none', 3000);
+    }
+
+    refreshAll();
+</script>
+</body>
+</html>
