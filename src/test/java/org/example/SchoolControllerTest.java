@@ -7,7 +7,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -26,16 +25,17 @@ class SchoolControllerTest {
     @MockBean
     private SchoolService service;
 
-    // --- Student Tests ---
     @Test
     void testAddStudent() throws Exception {
-        given(service.addStudent(any(Student.class))).willReturn("Student added: Test");
+        // UPDATE MOCK RETURN VALUE:
+        given(service.addStudent(any(Student.class))).willReturn("Student added successfully");
 
         mockMvc.perform(post("/api/student")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\":\"S1\", \"firstName\":\"John\", \"lastName\":\"Doe\", \"year\":2023, \"programme\":\"CSE\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Student added: Test"));
+                // UPDATE EXPECTATION:
+                .andExpect(content().string("Student added successfully"));
     }
 
     @Test
@@ -58,16 +58,17 @@ class SchoolControllerTest {
                 .andExpect(content().json("{'id':'S1'}"));
     }
 
-    // --- Teacher Tests ---
     @Test
     void testAddTeacher() throws Exception {
-        given(service.addTeacher(any(Teacher.class))).willReturn("Teacher added: Snape");
+        // UPDATE MOCK RETURN VALUE:
+        given(service.addTeacher(any(Teacher.class))).willReturn("Teacher added successfully");
 
         mockMvc.perform(post("/api/teacher")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\":\"T1\", \"name\":\"Snape\", \"department\":\"Potions\", \"courseCount\":5}"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Teacher added: Snape"));
+                // UPDATE EXPECTATION:
+                .andExpect(content().string("Teacher added successfully"));
     }
 
     @Test
